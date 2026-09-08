@@ -1,0 +1,55 @@
+module Autotsar
+{
+    item TrailerFirstTrunk 
+    {
+        DisplayCategory = VehicleMaintenance,
+        Weight	=	50,
+        ItemType = base:normal,
+        Icon    =    CarTrunk,
+        MaxCapacity = 250,
+        ConditionAffectsCapacity = true,
+        ConditionMax = 100,
+        ChanceToSpawnDamaged = 80,
+        MechanicsItem = TRUE,
+    }
+
+    item TrailerSecondTrunk 
+    {
+        DisplayCategory = VehicleMaintenance,
+        Weight	=	50,
+        ItemType = base:normal,
+        Icon    =    CarTrunk,
+        MaxCapacity = 500,
+        ConditionAffectsCapacity = true,
+        ConditionMax = 100,
+        ChanceToSpawnDamaged = 80,
+        MechanicsItem = TRUE,
+    }
+    
+    item TsarEarthing
+    {
+        DisplayCategory = Electronics,
+        Weight	=	9000,
+        ItemType = base:normal,
+        Icon	=	LightBulb,
+        ConditionMax = 100,
+        WorldStaticModel = LightBulb,
+    }
+    
+    item InvisibleGenerator
+    {
+        DisplayCategory = Electronics,
+        ItemType = base:normal,
+        Weight = 40.0,
+        Icon = Generator,
+        ConditionMax = 100,
+        MetalValue = 500.0,
+        RequiresEquippedBothHands = true,
+        Tooltip = Tooltip_Generator,
+        Tags = base:heavyitem;base:generator;base:hasmetal;base:ignorezombiedensity;base:showcondition,
+        WorldObjectSprite = appliances_misc_01_16,
+        ConditionLowerChanceOneIn = 30,
+        SoundRadius = 20,
+        SoundVolume = 1,
+    }
+}
