@@ -398,6 +398,14 @@ module Base
 			}
 		}
 		
+		/* Needed by the Door/Window template defaults for the front-left side.
+		   Without it those parts point at an undefined area and drop out of the
+		   mechanics menu. */
+		area SeatFrontLeft
+		{
+			xywh = 0.7684 0.4737 0.4737 0.4737,
+		}
+
 		area SeatFrontRight
 		{
 			xywh = -0.7632 0.4737 0.4737 0.4737,
@@ -423,7 +431,7 @@ module Base
 			xywh = -0.7632 -0.6895 0.4737 0.4737,
 		}
 		
-		area Engine
+		area TrailerEngine
 		{
 			xywh = 0.0000 1.1368 0.8737 0.4737,
 		}
@@ -443,7 +451,6 @@ module Base
 		part Window*
 		{
 			mechanicRequireKey = false,
-			area = SeatRearRight,
 
 			windows
 			{
@@ -459,6 +466,29 @@ module Base
 			{
 				requireInstalled =,
 			}
+		}
+
+		/* The wildcard above used to force every window into SeatRearRight, so
+		   all four stacked on one radial slot. The Window template only ships
+		   default areas for the rear pair, so the front pair is set explicitly. */
+		part WindowFrontLeft
+		{
+			area = SeatFrontLeft,
+		}
+
+		part WindowFrontRight
+		{
+			area = SeatFrontRight,
+		}
+
+		part WindowRearLeft
+		{
+			area = SeatRearLeft,
+		}
+
+		part WindowRearRight
+		{
+			area = SeatRearRight,
 		}
 
 		template = Door/part/DoorFrontLeft,
@@ -486,15 +516,39 @@ module Base
 		template = Seat/part/SeatRearLeft,
 		template = Seat/part/SeatRearRight,
 
-		part Seat*
+		/* No "part Seat* { area = SeatRearRight }" here on purpose: the Seat
+		   template already gives every seat its own area, and the wildcard
+		   override collapsed all five onto a single radial slot. */
+
+		/* Replaces "template = Engine". A part literally named "Engine" makes
+		   CarController.updateTrailer() call steerInDirectionOfTowing(), which
+		   pivots the towed trailer's front wheels toward the tow vehicle.
+		   Renaming the part leaves that branch unentered, so the wheels stay
+		   straight; the engine behaviour we actually need (temperature, fuel
+		   burn, battery charge, cabin heater) is reimplemented in Trailers.lua. */
+		part TrailerEngine
 		{
-			area = SeatRearRight,
+			area = TrailerEngine,
+			mechanicArea = TrailerEngine,
+			category = engine,
+			mechanicRequireKey = false,
+			durability = 10,
+			lua
+			{
+				create = Trailers.Create.TrailerEngine,
+				update = Trailers.Update.TrailerEngine,
+				checkEngine = Vehicles.CheckEngine.Engine,
+			}
 		}
 
-		template = Engine,
 		template = EngineDoor,
         part EngineDoor
         {
+			/* EngineDoor/Battery/Heater templates all default to area = Engine,
+			   which no longer exists. Repointed at TrailerEngine so they stay
+			   reachable in the mechanics menu. */
+			area = TrailerEngine,
+			mechanicArea = TrailerEngine,
 			model Default
 			{
 				file = TrailerHomeHood,
@@ -530,6 +584,14 @@ module Base
       }
 		template = Muffler,
 		template = Battery,
+
+		part Battery
+		{
+			area = TrailerEngine,
+			mechanicArea = TrailerEngine,
+			mechanicRequireKey = false,
+		}
+
 		template = GasTank,
 
 		part GasTank
@@ -548,6 +610,13 @@ module Base
 		}
 
 		template = Heater,
+
+		part Heater
+		{
+			area = TrailerEngine,
+			mechanicArea = TrailerEngine,
+		}
+
 		template = Fridges/part/FridgeMiddleRight,
 		template = Ovens/part/OvenMiddleLeft,
 		template = Medicines/part/MedicineFrontRight,

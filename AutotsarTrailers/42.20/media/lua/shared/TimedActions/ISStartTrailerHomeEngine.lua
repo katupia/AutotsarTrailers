@@ -2,11 +2,23 @@ require "TimedActions/ISBaseTimedAction"
 
 ISStartTrailerHomeEngine = ISBaseTimedAction:derive("ISStartTrailerHomeEngine")
 
+-- isEngineRunning()/isEngineStarted() read the VehicleEngine, which these
+-- trailers no longer have (see part TrailerEngine). The motor state is a
+-- modData flag; the motor may be started while hitched (the server refuses it
+-- for the generator trailer only).
 function ISStartTrailerHomeEngine:isValid()
 	local vehicle = self.character:getVehicle()
-	return vehicle ~= nil and
-		not vehicle:isEngineRunning() and 
-		not vehicle:isEngineStarted()
+	if not vehicle then return false end
+	local motor = vehicle:getPartById("TrailerEngine")
+	return motor ~= nil and motor:getModData().tsarEngineRunning ~= true
+end
+
+function ISStartTrailerHomeEngine:perform()
+	ISBaseTimedAction.perform(self)
+	-- Client-side ignition one-shot; the authoritative state is set in complete().
+	if TrailersEngineSound and TrailersEngineSound.playStart then
+		TrailersEngineSound.playStart(self.character:getVehicle())
+	end
 end
 
 function ISStartTrailerHomeEngine:complete()

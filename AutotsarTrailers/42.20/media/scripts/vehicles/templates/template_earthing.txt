@@ -23,7 +23,10 @@ module Base
 		
 		part Earthing*
 		{
-			area = Engine,
+			/* Was "Engine". That area was renamed TrailerEngine on the generator
+			   trailer (the only vehicle instantiating this template) when the
+			   Engine part was replaced to stop the towed wheels pivoting. */
+			area = TrailerEngine,
 			/**/
 			category = nodisplay,
 			specificItem = false,

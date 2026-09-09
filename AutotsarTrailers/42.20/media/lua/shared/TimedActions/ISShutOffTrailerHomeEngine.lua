@@ -4,8 +4,15 @@ ISShutOffTrailerHomeEngine = ISBaseTimedAction:derive("ISShutOffTrailerHomeEngin
 
 function ISShutOffTrailerHomeEngine:isValid()
 	local vehicle = self.character:getVehicle()
-	return vehicle ~= nil and
-		vehicle:isEngineRunning()
+	local motor = vehicle and vehicle:getPartById("TrailerEngine")
+	return motor ~= nil and motor:getModData().tsarEngineRunning == true
+end
+
+function ISShutOffTrailerHomeEngine:perform()
+	ISBaseTimedAction.perform(self)
+	if TrailersEngineSound and TrailersEngineSound.playStop then
+		TrailersEngineSound.playStop(self.character:getVehicle())
+	end
 end
 
 function ISShutOffTrailerHomeEngine:complete()

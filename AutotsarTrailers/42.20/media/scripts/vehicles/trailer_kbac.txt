@@ -243,7 +243,15 @@ module Base
 
 		attachment trailer
 		{
-			offset = 0.0000 -0.0158 1.7421,
+			/* Hitch height. Vanilla tow vehicles anchor theirs at y = -0.2747;
+			   at the original -0.0158 the KBAC's end of the point constraint sat
+			   0.26 above it -- by far the widest gap of any trailer (First and
+			   Second sit at -0.1632, Home at -0.1789). Pulling forward, that
+			   mismatch gave the constraint a downward component that levered the
+			   trailer's nose into the terrain, so it crawled forward while
+			   reversing (which lifts the nose instead) stayed normal. Lowering
+			   it brings the gap in line with the trailers that tow correctly. */
+			offset = 0.0000 -0.1250 1.7421,
 			rotate = 0.0000 0.0000 0.0000,
 		}
 	}

@@ -4,7 +4,12 @@ ISHotwireTrailerHome = ISBaseTimedAction:derive("ISHotwireTrailerHome")
 
 function ISHotwireTrailerHome:isValid()
 	local vehicle = self.character:getVehicle()
-	return vehicle ~= nil and not vehicle:isEngineRunning() and not vehicle:isEngineStarted()
+	if not vehicle then return false end
+	-- Nothing to hotwire on a TrailerEngine trailer: the motor is a pull-start
+	-- power plant with no ignition. isEngineRunning()/isEngineStarted() are also
+	-- permanently false there, which would have made this action always valid.
+	if vehicle:getPartById("TrailerEngine") then return false end
+	return not vehicle:isEngineRunning() and not vehicle:isEngineStarted()
 end
 
 function ISHotwireTrailerHome:update()

@@ -126,7 +126,9 @@ function ISVehicleMenu.showRadialMenuOutside(playerObj)
 				menu:addSlice(getText("ContextMenu_Turn_On_Generator"), getTexture("media/ui/vehicles/vehicle_generator_on.png"), ISWorldObjectContextMenuForTrailerGenerator.onActivateGenerator, playerIndex, trailer, generator, true);
 				menu:addSlice(getText("ContextMenu_GeneratorUnplug"), getTexture("media/ui/vehicles/vehicle_generator_unplug.png"), ISWorldObjectContextMenuForTrailerGenerator.generatorUnplug, playerObj, trailer);
 			end
-		else
+		elseif trailer:getVehicleTowedBy() == nil and trailer:getVehicleTowing() == nil then
+			-- Hidden while hitched: connecting would anchor a generator to a
+			-- square the trailer is about to be towed away from.
 			menu:addSlice(getText("ContextMenu_GeneratorPlug"), getTexture("media/ui/vehicles/vehicle_generator_plug.png"), ISWorldObjectContextMenuForTrailerGenerator.generatorPlug, playerObj,  trailer);
 		end
 	end

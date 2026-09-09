@@ -7,7 +7,15 @@ require "TimedActions/ISBaseTimedAction"
 ISPlugTrailerGenerator = ISBaseTimedAction:derive("ISPlugTrailerGenerator");
 
 function ISPlugTrailerGenerator:isValid()
-	return true
+	-- Plugging in anchors an IsoGenerator to a fixed world square. A hitched
+	-- trailer would then be towed away from it, leaving that generator powering
+	-- its old location forever. isValid() is re-evaluated for the whole action,
+	-- so hitching the trailer mid-plug aborts it too.
+	-- Self-contained on purpose: media/lua/server does not load on MP clients,
+	-- so Trailers.* is not reachable from here.
+	local trailer = self.trailer
+	if not trailer then return false end
+	return trailer:getVehicleTowedBy() == nil and trailer:getVehicleTowing() == nil
 end
 
 function ISPlugTrailerGenerator:waitToStart()
